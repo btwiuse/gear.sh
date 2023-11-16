@@ -1,3 +1,3 @@
-let accounts = await web3Accounts()
+let accounts = await web3Accounts();
 
-console.log(JSON.stringify(accounts, null, "  "))
+console.log(JSON.stringify(accounts, null, "  "));

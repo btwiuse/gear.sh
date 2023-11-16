@@ -16,6 +16,24 @@
     color: black
     children: Wallet
     size: tiny
+- value: web3FromSource
+  text: Get signer from wallet identifier
+  label:
+    color: black
+    children: Wallet
+    size: tiny
+- value: web3FromAddress
+  text: Get signer from address
+  label:
+    color: black
+    children: Wallet
+    size: tiny
+- value: signTransaction
+  text: Sign transaction
+  label:
+    color: black
+    children: Wallet
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:

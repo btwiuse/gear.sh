@@ -17,7 +17,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let accounts = await web3Accounts()\n\nconsole.log(JSON.stringify(accounts, null, \"  \"))\n"
+    "code": "let accounts = await web3Accounts();\n\nconsole.log(JSON.stringify(accounts, null, \"  \"));\n"
   },
   {
     "value": "subscribeAccounts",
@@ -27,7 +27,37 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let unsub = await web3AccountsSubscribe((accounts)=>{\n  console.log(JSON.stringify(accounts, null, \"  \"))\n})\n\n// call unsub to stop subscription\n// unsub()\n"
+    "code": "let unsub = await web3AccountsSubscribe((accounts) => {\n  console.log(JSON.stringify(accounts, null, \"  \"));\n});\n\n// call unsub to stop subscription\n// unsub()\n"
+  },
+  {
+    "value": "web3FromSource",
+    "text": "Get signer from wallet identifier",
+    "label": {
+      "color": "black",
+      "children": "Wallet",
+      "size": "tiny"
+    },
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromSource(\"polkadot-js\");\n"
+  },
+  {
+    "value": "web3FromAddress",
+    "text": "Get signer from address",
+    "label": {
+      "color": "black",
+      "children": "Wallet",
+      "size": "tiny"
+    },
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromAddress(ALICE);\n"
+  },
+  {
+    "value": "signTransaction",
+    "text": "Sign transaction",
+    "label": {
+      "color": "black",
+      "children": "Wallet",
+      "size": "tiny"
+    },
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\n\napi.setSigner(signer);\n\nlet tx = api.tx.system.remark(\"Hello\");\n\nawait tx.signAndSend(ALICE);\n"
   },
   {
     "value": "rpcNetworkAuthoring",
