@@ -7,6 +7,16 @@
       "children": "Wallet",
       "size": "tiny"
     },
+    "code": "let accounts = await web3Accounts();\n\nconsole.log(JSON.stringify(accounts, null, \"  \"));\n"
+  },
+  {
+    "value": "listAccounts",
+    "text": "List accounts",
+    "label": {
+      "color": "black",
+      "children": "Wallet",
+      "size": "tiny"
+    },
     "code": "let accounts = await web3Accounts()\n\nconsole.log(JSON.stringify(accounts, null, \"  \"))\n"
   },
   {
