@@ -1,0 +1,108 @@
+{
+  "value": "rpcNetworkAuthoring",
+  "text": "Get authoring information",
+  "label": {
+    "color": "pink",
+    "children": "RPC",
+    "size": "tiny"
+  }
+}
+{
+  "value": "rpcListenToHead",
+  "text": "Listen to new Head",
+  "label": {
+    "color": "pink",
+    "children": "RPC",
+    "size": "tiny"
+  }
+}
+{
+  "value": "rpcQueryState",
+  "text": "Get state metadata",
+  "label": {
+    "color": "pink",
+    "children": "RPC",
+    "size": "tiny"
+  }
+}
+{
+  "value": "rpcSystemInfo",
+  "text": "Get system information",
+  "label": {
+    "color": "pink",
+    "children": "RPC",
+    "size": "tiny"
+  }
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Get chain state information",
+  "value": "storageGetInfo"
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Listen to system events",
+  "value": "storageSystemEvents"
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Listen to balance changes",
+  "value": "storageListenToBalanceChange"
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Listen to multiple balances changes",
+  "value": "storageListenToMultipleBalancesChange"
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Retrieve historic query data",
+  "value": "storageRetrieveInfoOnQueryKeys"
+}
+{
+  "label": {
+    "children": "Storage",
+    "color": "blue",
+    "size": "tiny"
+  },
+  "text": "Get underlying storage key hex values",
+  "value": "storageKeys"
+}
+{
+  "value": "constsStakingParameters",
+  "text": "Get staking parameters",
+  "label": {
+    "color": "green",
+    "children": "Consts",
+    "size": "tiny"
+  }
+}
+{
+  "value": "extrinsicMakeTransfer",
+  "text": "Make transfer and listen to events",
+  "label": {
+    "color": "grey",
+    "children": "Extrinsics",
+    "size": "tiny"
+  }
+}

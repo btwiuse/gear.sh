@@ -1,0 +1,122 @@
+[
+  {
+    "value": "rpcNetworkAuthoring",
+    "text": "Get authoring information",
+    "label": {
+      "color": "pink",
+      "children": "RPC",
+      "size": "tiny"
+    },
+    "code": "// Returns all pending extrinsics, potentially grouped by sender\nconst unsub = await api.rpc.author.pendingExtrinsics((extrinsics) => {\n  if(extrinsics.length === 0){\n    console.log('No pending extrinsics');\n    return;\n  }\n  console.log(extrinsics);\n});"
+  },
+  {
+    "value": "rpcListenToHead",
+    "text": "Listen to new Head",
+    "label": {
+      "color": "pink",
+      "children": "RPC",
+      "size": "tiny"
+    },
+    "code": "// subscribe to new headers, printing the full info for 5 Blocks\nlet count = 0;\nconst unsub = await api.rpc.chain.subscribeNewHeads((header) => {\n  console.log(`#${header.number}:`, header);\n\n  if (++count === 5) {\n    console.log('5 headers retrieved, unsubscribing');\n    unsub();\n  }\n});"
+  },
+  {
+    "value": "rpcQueryState",
+    "text": "Get state metadata",
+    "label": {
+      "color": "pink",
+      "children": "RPC",
+      "size": "tiny"
+    },
+    "code": "// retrieve and log the complete metadata of your node\nconst metadata = await api.rpc.state.getMetadata();\n\nconsole.log('version: ' + metadata.version);\nconsole.log('formatted: ' + JSON.stringify(metadata.asLatest.toHuman(), null, 2));\n"
+  },
+  {
+    "value": "rpcSystemInfo",
+    "text": "Get system information",
+    "label": {
+      "color": "pink",
+      "children": "RPC",
+      "size": "tiny"
+    },
+    "code": "// Retrieve the chain & node information information via rpc calls\nconst [chain, nodeName, nodeVersion, properties] = await Promise.all([\n  api.rpc.system.chain(),\n  api.rpc.system.name(),\n  api.rpc.system.version(),\n  api.rpc.system.properties()\n]);\nconsole.log('You are connected to chain ' + chain)\nconsole.log('You are using: ' + nodeName + ' v' + nodeVersion);\n\nif (properties.size > 0) {\n  console.log('Node specific properties:');\n  properties.forEach((value, key) => {\n    console.log(key, value);\n  });\n} else {\n  console.log('No specific chain properties found.');\n}"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Get chain state information",
+    "value": "storageGetInfo",
+    "code": "// Get chain state information\n// Make our basic chain state / storage queries, all in one go\n\nconst [now, minimumValidatorCount, validators] = await Promise.all([\n  api.query.timestamp.now(),\n  api.query.staking.minimumValidatorCount(),\n  api.query.session.validators()\n]);\n\nconsole.log('The current date is: ' + now);\nconsole.log('The minimum validator count: ' + minimumValidatorCount);\n\nif (validators && validators.length > 0) {\n  // Retrieve the balances for all validators\n  console.log('Validators');\n\n  const validatorBalances = await Promise.all(\n    validators.map((authorityId) => api.query.system.account(authorityId))\n  );\n\n  validators.forEach((authorityId, index) => {\n    console.log('Validator: ' + authorityId.toString() )\n    console.log('AccountData: ' + validatorBalances[index].toHuman() );\n  });\n}\n"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Listen to system events",
+    "value": "storageSystemEvents",
+    "code": "// Subscribe to system events via storage\napi.query.system.events((events) => {\n  console.log('----- Received ' + events.length + ' event(s): -----');\n  // loop through the Vec<EventRecord>\n  events.forEach((record) => {\n  // extract the phase, event and the event types\n    const { event, phase } = record;\n    const types = event.typeDef;\n    // show what we are busy with\n    console.log(event.section + ':' + event.method + '::' + 'phase=' + phase.toString());\n    console.log(event.meta.docs.toString());\n    // loop through each of the parameters, displaying the type and data\n    event.data.forEach((data, index) => {\n      console.log(types[index].type + ';' + data.toString());\n    });\n  });\n});"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Listen to balance changes",
+    "value": "storageListenToBalanceChange",
+    "code": "// You may leave this example running and make a transfer\n// of any value from or to Alice address in the 'Transfer' App\nconst ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';\n\n// Retrieve the initial data\nlet [, { free: previous }] = await api.query.system.account(ALICE);\n\nconsole.log('ALICE has a balance of ' + previous);\n\n// Subscribe and listen to balance changes\napi.query.system.account(ALICE, ([, { free }]) => {\n  // Calculate the delta\n  const change = free.sub(previous);\n  // Only display positive value changes (Since we are pulling 'previous' above already,\n  // the initial balance change will also be zero)\n  if (!change.isZero()) {\n    previous = free;\n    console.log('New transaction of: '+ change);\n  }\n});"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Listen to multiple balances changes",
+    "value": "storageListenToMultipleBalancesChange",
+    "code": "// You may leave this example running and make a transfer\n// of any value from or to Alice/Bob address in the 'Transfer' App\nconst ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';\nconst BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';\n\nconsole.log('Tracking balances for:', [ALICE, BOB])\n\n// Subscribe and listen to several balance changes\napi.query.system.account.multi([ALICE, BOB], (info) => {\n  console.log('Change detected, new balances: ', info)\n});"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Retrieve historic query data",
+    "value": "storageRetrieveInfoOnQueryKeys",
+    "code": "// This example set shows how to make queries at a point\nconst ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';\n\n// retrieve the balance, once-off at the latest block\nconst { data: { free } } = await api.query.system.account(ALICE);\n\nconsole.log('Alice has a current balance of', free.toHuman());\n\n// retrieve balance updates with an optional value callback\nconst balanceUnsub = await api.query.system.account(ALICE, ({ data: { free } }) => {\n  console.log('Alice has an updated balance of', free.toHuman());\n});\n\n// retrieve the balance at a block hash in the past\nconst header = await api.rpc.chain.getHeader();\nconst prevHash = await api.rpc.chain.getBlockHash(header.number.unwrap().subn(42));\nconst { data: { free: prev } } = await api.query.system.account.at(prevHash, ALICE);\n\nconsole.log('Alice had a balance of', prev.toHuman(), '(42 blocks ago)');\n\n// useful in some situations - the value hash and storage entry size\nconst currHash = await api.query.system.account.hash(ALICE);\nconst currSize = await api.query.system.account.size(ALICE);\n\nconsole.log('Alice account entry has a value hash of', currHash, 'with a size of', currSize);"
+  },
+  {
+    "label": {
+      "children": "Storage",
+      "color": "blue",
+      "size": "tiny"
+    },
+    "text": "Get underlying storage key hex values",
+    "value": "storageKeys",
+    "code": "// this example shows how to retrieve the hex representation of a storage key\n\nconst ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';\n\n// show the key for an entry without arguments\nconsole.log(api.query.timestamp.now.key());\n\n// show the key for a map entry (single argument)\nconsole.log(api.query.system.account.key(ALICE));\n\n// show the key prefix for a map\nconsole.log(api.query.system.account.keyPrefix());\n\n// show the key for a double map\nconsole.log(api.query.staking.erasStakers.key(0, ALICE));\n\n// show the key prefix for a doublemap\nconsole.log(api.query.staking.erasStakers.keyPrefix());\n"
+  },
+  {
+    "value": "constsStakingParameters",
+    "text": "Get staking parameters",
+    "label": {
+      "color": "green",
+      "children": "Consts",
+      "size": "tiny"
+    },
+    "code": "// Get SRML staking parameters as consts\n// 'parameter_types' were added to substrate with spec_version: 101.\n// This example will throw an error if used with versions before that.\n\nconst bondingDuration = api.consts.staking.bondingDuration;\nconst sessionsPerEra = api.consts.staking.sessionsPerEra;\n\nconsole.log('Staking bonding duration: ' + bondingDuration);\nconsole.log('Staking sessions per era: ' + sessionsPerEra);"
+  },
+  {
+    "value": "extrinsicMakeTransfer",
+    "text": "Make transfer and listen to events",
+    "label": {
+      "color": "grey",
+      "children": "Extrinsics",
+      "size": "tiny"
+    },
+    "code": "// Make a transfer from Alice to Bob and listen to system events.\n// You need to be connected to a development chain for this example to work.\nconst ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';\nconst BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';\n\n// Get a random number between 1 and 100000\nconst randomAmount = Math.floor((Math.random() * 100000) + 1);\n\n// Create a extrinsic, transferring randomAmount units to Bob.\nconst transfer = api.tx.balances.transferAllowDeath(BOB, randomAmount);\n\n// Sign and Send the transaction\nawait transferAllowDeath.signAndSend(ALICE, ({ events = [], status }) => {\n  if (status.isInBlock) {\n    console.log('Successful transfer of ' + randomAmount + ' with hash ' + status.asInBlock.toHex());\n  } else {\n    console.log('Status of transfer: ' + status.type);\n  }\n\n  events.forEach(({ phase, event: { data, method, section } }) => {\n    console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());\n  });\n});"
+  }
+]

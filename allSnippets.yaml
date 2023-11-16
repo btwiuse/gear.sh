@@ -1,0 +1,293 @@
+- value: rpcNetworkAuthoring
+  text: Get authoring information
+  label:
+    color: pink
+    children: RPC
+    size: tiny
+  code: |-
+    // Returns all pending extrinsics, potentially grouped by sender
+    const unsub = await api.rpc.author.pendingExtrinsics((extrinsics) => {
+      if(extrinsics.length === 0){
+        console.log('No pending extrinsics');
+        return;
+      }
+      console.log(extrinsics);
+    });
+- value: rpcListenToHead
+  text: Listen to new Head
+  label:
+    color: pink
+    children: RPC
+    size: tiny
+  code: |-
+    // subscribe to new headers, printing the full info for 5 Blocks
+    let count = 0;
+    const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+      console.log(`#${header.number}:`, header);
+
+      if (++count === 5) {
+        console.log('5 headers retrieved, unsubscribing');
+        unsub();
+      }
+    });
+- value: rpcQueryState
+  text: Get state metadata
+  label:
+    color: pink
+    children: RPC
+    size: tiny
+  code: >
+    // retrieve and log the complete metadata of your node
+
+    const metadata = await api.rpc.state.getMetadata();
+
+
+    console.log('version: ' + metadata.version);
+
+    console.log('formatted: ' + JSON.stringify(metadata.asLatest.toHuman(),
+    null, 2));
+- value: rpcSystemInfo
+  text: Get system information
+  label:
+    color: pink
+    children: RPC
+    size: tiny
+  code: |-
+    // Retrieve the chain & node information information via rpc calls
+    const [chain, nodeName, nodeVersion, properties] = await Promise.all([
+      api.rpc.system.chain(),
+      api.rpc.system.name(),
+      api.rpc.system.version(),
+      api.rpc.system.properties()
+    ]);
+    console.log('You are connected to chain ' + chain)
+    console.log('You are using: ' + nodeName + ' v' + nodeVersion);
+
+    if (properties.size > 0) {
+      console.log('Node specific properties:');
+      properties.forEach((value, key) => {
+        console.log(key, value);
+      });
+    } else {
+      console.log('No specific chain properties found.');
+    }
+- code: |
+    // Get chain state information
+    // Make our basic chain state / storage queries, all in one go
+
+    const [now, minimumValidatorCount, validators] = await Promise.all([
+      api.query.timestamp.now(),
+      api.query.staking.minimumValidatorCount(),
+      api.query.session.validators()
+    ]);
+
+    console.log('The current date is: ' + now);
+    console.log('The minimum validator count: ' + minimumValidatorCount);
+
+    if (validators && validators.length > 0) {
+      // Retrieve the balances for all validators
+      console.log('Validators');
+
+      const validatorBalances = await Promise.all(
+        validators.map((authorityId) => api.query.system.account(authorityId))
+      );
+
+      validators.forEach((authorityId, index) => {
+        console.log('Validator: ' + authorityId.toString() )
+        console.log('AccountData: ' + validatorBalances[index].toHuman() );
+      });
+    }
+  label: &ref_0
+    children: Storage
+    color: blue
+    size: tiny
+  text: Get chain state information
+  value: storageGetInfo
+- code: |-
+    // Subscribe to system events via storage
+    api.query.system.events((events) => {
+      console.log('----- Received ' + events.length + ' event(s): -----');
+      // loop through the Vec<EventRecord>
+      events.forEach((record) => {
+      // extract the phase, event and the event types
+        const { event, phase } = record;
+        const types = event.typeDef;
+        // show what we are busy with
+        console.log(event.section + ':' + event.method + '::' + 'phase=' + phase.toString());
+        console.log(event.meta.docs.toString());
+        // loop through each of the parameters, displaying the type and data
+        event.data.forEach((data, index) => {
+          console.log(types[index].type + ';' + data.toString());
+        });
+      });
+    });
+  label: *ref_0
+  text: Listen to system events
+  value: storageSystemEvents
+- code: |-
+    // You may leave this example running and make a transfer
+    // of any value from or to Alice address in the 'Transfer' App
+    const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+
+    // Retrieve the initial data
+    let [, { free: previous }] = await api.query.system.account(ALICE);
+
+    console.log('ALICE has a balance of ' + previous);
+
+    // Subscribe and listen to balance changes
+    api.query.system.account(ALICE, ([, { free }]) => {
+      // Calculate the delta
+      const change = free.sub(previous);
+      // Only display positive value changes (Since we are pulling 'previous' above already,
+      // the initial balance change will also be zero)
+      if (!change.isZero()) {
+        previous = free;
+        console.log('New transaction of: '+ change);
+      }
+    });
+  label: *ref_0
+  text: Listen to balance changes
+  value: storageListenToBalanceChange
+- code: |-
+    // You may leave this example running and make a transfer
+    // of any value from or to Alice/Bob address in the 'Transfer' App
+    const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+    const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
+
+    console.log('Tracking balances for:', [ALICE, BOB])
+
+    // Subscribe and listen to several balance changes
+    api.query.system.account.multi([ALICE, BOB], (info) => {
+      console.log('Change detected, new balances: ', info)
+    });
+  label: *ref_0
+  text: Listen to multiple balances changes
+  value: storageListenToMultipleBalancesChange
+- code: >-
+    // This example set shows how to make queries at a point
+
+    const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+
+
+    // retrieve the balance, once-off at the latest block
+
+    const { data: { free } } = await api.query.system.account(ALICE);
+
+
+    console.log('Alice has a current balance of', free.toHuman());
+
+
+    // retrieve balance updates with an optional value callback
+
+    const balanceUnsub = await api.query.system.account(ALICE, ({ data: { free }
+    }) => {
+      console.log('Alice has an updated balance of', free.toHuman());
+    });
+
+
+    // retrieve the balance at a block hash in the past
+
+    const header = await api.rpc.chain.getHeader();
+
+    const prevHash = await
+    api.rpc.chain.getBlockHash(header.number.unwrap().subn(42));
+
+    const { data: { free: prev } } = await api.query.system.account.at(prevHash,
+    ALICE);
+
+
+    console.log('Alice had a balance of', prev.toHuman(), '(42 blocks ago)');
+
+
+    // useful in some situations - the value hash and storage entry size
+
+    const currHash = await api.query.system.account.hash(ALICE);
+
+    const currSize = await api.query.system.account.size(ALICE);
+
+
+    console.log('Alice account entry has a value hash of', currHash, 'with a
+    size of', currSize);
+  label: *ref_0
+  text: Retrieve historic query data
+  value: storageRetrieveInfoOnQueryKeys
+- code: >
+    // this example shows how to retrieve the hex representation of a storage
+    key
+
+
+    const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+
+
+    // show the key for an entry without arguments
+
+    console.log(api.query.timestamp.now.key());
+
+
+    // show the key for a map entry (single argument)
+
+    console.log(api.query.system.account.key(ALICE));
+
+
+    // show the key prefix for a map
+
+    console.log(api.query.system.account.keyPrefix());
+
+
+    // show the key for a double map
+
+    console.log(api.query.staking.erasStakers.key(0, ALICE));
+
+
+    // show the key prefix for a doublemap
+
+    console.log(api.query.staking.erasStakers.keyPrefix());
+  label: *ref_0
+  text: Get underlying storage key hex values
+  value: storageKeys
+- value: constsStakingParameters
+  text: Get staking parameters
+  label:
+    color: green
+    children: Consts
+    size: tiny
+  code: |-
+    // Get SRML staking parameters as consts
+    // 'parameter_types' were added to substrate with spec_version: 101.
+    // This example will throw an error if used with versions before that.
+
+    const bondingDuration = api.consts.staking.bondingDuration;
+    const sessionsPerEra = api.consts.staking.sessionsPerEra;
+
+    console.log('Staking bonding duration: ' + bondingDuration);
+    console.log('Staking sessions per era: ' + sessionsPerEra);
+- value: extrinsicMakeTransfer
+  text: Make transfer and listen to events
+  label:
+    color: grey
+    children: Extrinsics
+    size: tiny
+  code: |-
+    // Make a transfer from Alice to Bob and listen to system events.
+    // You need to be connected to a development chain for this example to work.
+    const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+    const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
+
+    // Get a random number between 1 and 100000
+    const randomAmount = Math.floor((Math.random() * 100000) + 1);
+
+    // Create a extrinsic, transferring randomAmount units to Bob.
+    const transfer = api.tx.balances.transferAllowDeath(BOB, randomAmount);
+
+    // Sign and Send the transaction
+    await transferAllowDeath.signAndSend(ALICE, ({ events = [], status }) => {
+      if (status.isInBlock) {
+        console.log('Successful transfer of ' + randomAmount + ' with hash ' + status.asInBlock.toHex());
+      } else {
+        console.log('Status of transfer: ' + status.type);
+      }
+
+      events.forEach(({ phase, event: { data, method, section } }) => {
+        console.log(phase.toString() + ' : ' + section + '.' + method + ' ' + data.toString());
+      });
+    });
