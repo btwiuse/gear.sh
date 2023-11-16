@@ -43,7 +43,7 @@
 - value: decodeMetadata
   text: Decode metadata
   label:
-    color: gray
+    color: blue
     children: ProgramMetadata
     size: tiny
 - value: rpcNetworkAuthoring
