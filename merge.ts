@@ -6,11 +6,10 @@ Deno.writeTextFileSync(
   "allSnippets.json",
   JSON.stringify(
     index.map((s) => {
-	    return {
-		    ...s,
-		    code: Deno.readTextFileSync(`${s.value}.js`)
-	    }
-      
+      return {
+        ...s,
+        code: Deno.readTextFileSync(`${s.value}.js`),
+      };
     }),
     null,
     "  ",

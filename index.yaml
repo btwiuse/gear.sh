@@ -1,3 +1,9 @@
+- value: listWallets
+  text: List wallets
+  label:
+    color: black
+    children: Wallet
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:
