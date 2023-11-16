@@ -46,6 +46,12 @@
     color: blue
     children: ProgramMetadata
     size: tiny
+- value: deployProgram
+  text: DeployProgram
+  label:
+    color: cyan
+    children: Program
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:

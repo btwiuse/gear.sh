@@ -80,6 +80,16 @@
     "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\n\nlet metaText = await metaResp.text();\n\nlet meta = ProgramMetadata.from(`0x${metaText}`);\n\nconsole.log(JSON.stringify(meta, null, \"  \"));\n"
   },
   {
+    "value": "deployProgram",
+    "text": "DeployProgram",
+    "label": {
+      "color": "cyan",
+      "children": "Program",
+      "size": "tiny"
+    },
+    "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\nlet metaText = await metaResp.text();\nlet meta = ProgramMetadata.from(`0x${metaText}`);\n\nlet wasmResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.opt.wasm\",\n);\nlet wasmBuff = await wasmResp.arrayBuffer();\n\nlet program = {\n  code: new Uint8Array(wasmBuff),\n  gasLimit: 1000000000,\n  value: 0,\n  initPayload: \"0x\",\n};\n\nlet { programId, codeId, salt, extrinsic } = await api.program.upload(\n  program,\n  meta,\n);\nlet codeExists = await api.code.exists(codeId);\n\nconsole.log(\"codeExists\", codeExists);\nconsole.log(\"codeId:\", codeId);\nconsole.log(\"salt:\", salt);\nconsole.log(\"programId:\", programId);\n\nlet ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\napi.setSigner(signer);\n\nawait extrinsic.signAndSend(ALICE);\n"
+  },
+  {
     "value": "rpcNetworkAuthoring",
     "text": "Get authoring information",
     "label": {
