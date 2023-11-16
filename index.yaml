@@ -52,6 +52,18 @@
     color: yellow
     children: Program
     size: tiny
+- value: readProgramState
+  text: Read program state
+  label:
+    color: yellow
+    children: Program
+    size: tiny
+- value: writeProgramState
+  text: Write program state
+  label:
+    color: yellow
+    children: Program
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:

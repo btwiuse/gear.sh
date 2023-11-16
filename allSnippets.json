@@ -90,6 +90,26 @@
     "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\nlet metaText = await metaResp.text();\nlet meta = ProgramMetadata.from(`0x${metaText}`);\n\nlet wasmResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.opt.wasm\",\n);\nlet wasmBuff = await wasmResp.arrayBuffer();\n\nlet program = {\n  code: new Uint8Array(wasmBuff),\n  gasLimit: 1000000000,\n  value: 0,\n  initPayload: \"0x\",\n};\n\nlet { programId, codeId, salt, extrinsic } = await api.program.upload(\n  program,\n  meta,\n);\nlet codeExists = await api.code.exists(codeId);\n\nconsole.log(\"codeExists\", codeExists);\nconsole.log(\"codeId:\", codeId);\nconsole.log(\"salt:\", salt);\nconsole.log(\"programId:\", programId);\n\nlet ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\napi.setSigner(signer);\n\nawait extrinsic.signAndSend(ALICE);\n"
   },
   {
+    "value": "readProgramState",
+    "text": "Read program state",
+    "label": {
+      "color": "yellow",
+      "children": "Program",
+      "size": "tiny"
+    },
+    "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\nlet metaText = await metaResp.text();\nlet meta = ProgramMetadata.from(`0x${metaText}`);\n\n// https://idea.gear-tech.io/programs/0x54045e2dc35baf015f325b80b23a6d7d0942eaa9b2ecb87e56f934f7c3a71f5f?node=wss%3A%2F%2Ftestnet.vara-network.io\nlet programId =\n  \"0x54045e2dc35baf015f325b80b23a6d7d0942eaa9b2ecb87e56f934f7c3a71f5f\";\n\nlet payload = { \"Code\": \"gogl\" };\n\nlet result = await api.programState.read(\n  { programId, payload },\n  meta,\n);\n\nconsole.log(\"result:\", JSON.stringify(result.toHuman()));\n"
+  },
+  {
+    "value": "writeProgramState",
+    "text": "Write program state",
+    "label": {
+      "color": "yellow",
+      "children": "Program",
+      "size": "tiny"
+    },
+    "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\nlet metaText = await metaResp.text();\nlet meta = ProgramMetadata.from(`0x${metaText}`);\n\n// https://idea.gear-tech.io/programs/0x54045e2dc35baf015f325b80b23a6d7d0942eaa9b2ecb87e56f934f7c3a71f5f?node=wss%3A%2F%2Ftestnet.vara-network.io\nlet programId =\n  \"0x54045e2dc35baf015f325b80b23a6d7d0942eaa9b2ecb87e56f934f7c3a71f5f\";\nlet payload = {\n  AddUrl: {\n    Code: \"gogl\",\n    Url: \"https://google.com\",\n  },\n};\n\nlet msg = {\n  destination: programId,\n  payload,\n  gasLimit: 1000000000,\n  value: 0,\n};\n\nlet tx = api.message.send(msg, meta);\n\nlet ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\napi.setSigner(signer);\n\nawait tx.signAndSend(ALICE);\n"
+  },
+  {
     "value": "rpcNetworkAuthoring",
     "text": "Get authoring information",
     "label": {
