@@ -1,3 +1,3 @@
-let accounts = await web3Accounts();
+let wallets = await web3Enable("Gear Shell");
 
-console.log(JSON.stringify(accounts, null, "  "));
+console.log(JSON.stringify(wallets, null, "  "));
