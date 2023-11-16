@@ -37,7 +37,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromSource(\"polkadot-js\");\n"
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromSource(\"polkadot-js\");\n\nlet { signature } = await signer.signRaw({\n  address: ALICE,\n  data: \"Gear Shell\",\n  type: \"payload\",\n});\n\nconsole.log(signature);\n"
   },
   {
     "value": "web3FromAddress",
@@ -47,7 +47,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromAddress(ALICE);\n"
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\n\nlet { signer } = await web3FromAddress(ALICE);\n\nlet { signature } = await signer.signRaw({\n  address: ALICE,\n  data: \"Gear Shell\",\n  type: \"payload\",\n});\n\nconsole.log(signature);\n"
   },
   {
     "value": "signTransaction",
