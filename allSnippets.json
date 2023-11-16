@@ -20,6 +20,16 @@
     "code": "let accounts = await web3Accounts()\n\nconsole.log(JSON.stringify(accounts, null, \"  \"))\n"
   },
   {
+    "value": "subscribeAccounts",
+    "text": "Subscribe to account changes",
+    "label": {
+      "color": "black",
+      "children": "Wallet",
+      "size": "tiny"
+    },
+    "code": "let unsub = await web3AccountsSubscribe((accounts)=>{\n  console.log(JSON.stringify(accounts, null, \"  \"))\n})\n\n// call unsub to stop subscription\n// unsub()\n"
+  },
+  {
     "value": "rpcNetworkAuthoring",
     "text": "Get authoring information",
     "label": {
