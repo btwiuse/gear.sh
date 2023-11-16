@@ -34,6 +34,12 @@
     color: black
     children: Wallet
     size: tiny
+- value: fetchResources
+  text: Fetch resources
+  label:
+    color: green
+    children: Fetch
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:

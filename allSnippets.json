@@ -60,6 +60,16 @@
     "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\n\napi.setSigner(signer);\n\nlet tx = api.tx.system.remark(\"Hello\");\n\nawait tx.signAndSend(ALICE);\n"
   },
   {
+    "value": "fetchResources",
+    "text": "Fetch resources",
+    "label": {
+      "color": "green",
+      "children": "Fetch",
+      "size": "tiny"
+    },
+    "code": "let metaResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\n\nlet metaText = await metaResp.text();\n\nconsole.log(`0x${metaText}`);\n\nlet wasmResp = await fetch(\n  \"https://no-cors.deno.dev/https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.opt.wasm\",\n);\n\nlet wasmBuff = await wasmResp.arrayBuffer();\n\nconsole.log(util.u8aToHex(new Uint8Array(wasmBuff)));\n"
+  },
+  {
     "value": "rpcNetworkAuthoring",
     "text": "Get authoring information",
     "label": {
