@@ -3,6 +3,6 @@ let { signer } = await web3FromAddress(ALICE);
 
 api.setSigner(signer);
 
-let tx = api.tx.system.remark("Hello");
+let tx = api.tx.system.remarkWithEvent("Hello");
 
 await tx.signAndSend(ALICE);

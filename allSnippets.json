@@ -57,7 +57,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\n\napi.setSigner(signer);\n\nlet tx = api.tx.system.remark(\"Hello\");\n\nawait tx.signAndSend(ALICE);\n"
+    "code": "let ALICE = \"5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY\";\nlet { signer } = await web3FromAddress(ALICE);\n\napi.setSigner(signer);\n\nlet tx = api.tx.system.remarkWithEvent(\"Hello\");\n\nawait tx.signAndSend(ALICE);\n"
   },
   {
     "value": "fetchResources",
