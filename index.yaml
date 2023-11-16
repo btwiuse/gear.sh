@@ -40,6 +40,12 @@
     color: green
     children: Fetch
     size: tiny
+- value: decodeMetadata
+  text: Decode metadata
+  label:
+    color: gray
+    children: ProgramMetadata
+    size: tiny
 - value: rpcNetworkAuthoring
   text: Get authoring information
   label:
