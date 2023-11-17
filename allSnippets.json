@@ -70,6 +70,16 @@
     "code": "let metaResp = await fetch(\n  \"https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.meta.txt\",\n);\n\nlet metaText = await metaResp.text();\n\nconsole.log(`0x${metaText}`);\n\nlet wasmResp = await fetch(\n  \"https://github.com/btwiuse/gurls/releases/download/v0.0.1/gurls.opt.wasm\",\n);\n\nlet wasmBuff = await wasmResp.arrayBuffer();\n\nconsole.log(util.u8aToHex(new Uint8Array(wasmBuff)));\n"
   },
   {
+    "value": "fetchMetadata",
+    "text": "Fetch metadata from Gear IDEA",
+    "label": {
+      "color": "green",
+      "children": "Fetch",
+      "size": "tiny"
+    },
+    "code": "// please switch the network to vara testnet since the program used in this example is deployed there\n\nasync function getMeta() {\n  let metaResp = await fetch(\"https://idea.gear-tech.io/api\", {\n    \"headers\": {\n      \"accept\": \"application/json\",\n      \"content-type\": \"application/json\",\n    },\n    \"body\": JSON.stringify({\n      \"id\": 40353209,\n      \"jsonrpc\": \"2.0\",\n      \"method\": \"meta.get\",\n      \"params\": {\n        \"codeHash\":\n          \"0x93bb19155902258f566c05b31112726390e90532a50a0c97f6dce922a9ab64ab\",\n        \"genesis\":\n          \"0x525639f713f397dcf839bd022cd821f367ebcf179de7b9253531f8adbe5436d6\",\n      },\n    }),\n    \"method\": \"POST\",\n  });\n  let metaJson = await metaResp.json();\n  // console.log(JSON.stringify(metaJson))\n  return ProgramMetadata.from(metaJson.result.hex);\n}\n\nlet meta = await getMeta();\n\nasync function dumpProgramState(programId) {\n  let payload = \"0x\";\n\n  let result = await api.programState.read(\n    { programId, payload },\n    meta,\n  );\n\n  console.log(`${programId}:`, JSON.stringify(result.toHuman(), null, \"  \"));\n}\n\n// https://idea.gear-tech.io/programs/0x096e97bcb33c21c237c3514ab54158df74de6f97bbd667fed837360c5d3894d9?node=wss%3A%2F%2Ftestnet.vara-network.io\nawait dumpProgramState(\n  \"0x096e97bcb33c21c237c3514ab54158df74de6f97bbd667fed837360c5d3894d9\",\n);\n"
+  },
+  {
     "value": "decodeMetadata",
     "text": "Decode metadata",
     "label": {
