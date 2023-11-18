@@ -58,6 +58,12 @@
     color: yellow
     children: Program
     size: tiny
+- value: deployProgramPing
+  text: Deploy program (Ping)
+  label:
+    color: yellow
+    children: Program
+    size: tiny
 - value: readProgramState
   text: Read program state
   label:
@@ -66,6 +72,12 @@
     size: tiny
 - value: writeProgramState
   text: Write program state
+  label:
+    color: yellow
+    children: Program
+    size: tiny
+- value: sendMessagePing
+  text: Send message (Ping)
   label:
     color: yellow
     children: Program
