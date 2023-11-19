@@ -7,7 +7,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let wallets = await web3Enable(\"Gear Shell\");\n\nconsole.log(JSON.stringify(wallets, null, \"  \"));\n"
+    "code": "console.log(\"detected wallet:\", isWeb3Injected);\n\nlet wallets = await web3Enable(\"Gear Shell\");\n\nconsole.log(JSON.stringify(wallets, null, \"  \"));\n"
   },
   {
     "value": "listAccounts",
@@ -17,7 +17,7 @@
       "children": "Wallet",
       "size": "tiny"
     },
-    "code": "let accounts = await web3Accounts();\n\nconsole.log(JSON.stringify(accounts, null, \"  \"));\n"
+    "code": "console.log(\"detected wallet:\", isWeb3Injected);\n\nlet accounts = await web3Accounts();\n\nconsole.log(JSON.stringify(accounts, null, \"  \"));\n"
   },
   {
     "value": "subscribeAccounts",
